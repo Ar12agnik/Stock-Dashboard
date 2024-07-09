@@ -2,7 +2,7 @@ from django.shortcuts import render,HttpResponse,redirect
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-
+from django.contrib.auth.models import User
 from .models import stock_info
 from main import get_stock_info
 
@@ -102,6 +102,7 @@ def add_sell_record(request):
         stocks=stock_info.objects.all()
         
         return render(request,"add_sell_record.html",context={"stocks":stocks})
+@login_required
 def detailes(request,pk):
     stock=stock_info.objects.get(id=pk)
     name=stock.symbol
@@ -112,3 +113,22 @@ def detailes(request,pk):
     stock.total_invested=stock.price*int(stock.no_of_shares)
     stock.save()
     return render(request,"detailes.html",context={"stocks":stock,"username":request.user})
+def signup(request):
+    if request.method=='POST':
+        username=request.POST.get("username")
+        if User.objects.filter(username=username).exists():
+            return render(request,"signup.html",context={"message":"the username already exixts"})
+        else:
+            pwd1=request.POST.get("password1")
+            pwd2=request.POST.get("password2")
+            if pwd1==pwd2:
+                user=User.objects.create_user(username=username,password=pwd1)
+                user.save()
+                user = authenticate(username=username, password=pwd1)
+                login(request,user)
+                return redirect('index')
+            else:
+                return render(request,"signup.html",context={"message":"the Passwords Do not Match"})
+    else:
+        return render (request,"signup.html")
+                

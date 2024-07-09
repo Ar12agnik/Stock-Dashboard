@@ -16,11 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from stockalert.views import index,logout_user,add_stock,add_sell_record,detailes
+from stockalert.views import index,logout_user,add_stock,add_sell_record,detailes,signup
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index,name='index'),
+    path('signup', signup,name='signup'),
     path('logout', logout_user,name= 'logout'),
     path('add_stock', add_stock,name= 'add_stock'),
     path('remove_stock', add_sell_record,name= 'remove_stock'),
