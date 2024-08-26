@@ -13,4 +13,3 @@ def get_stock_info(ticker):
     price = float(soup.find(class_= class1).text.strip()[1:].replace(",",""))
     return price
 
-# print(type(price))
